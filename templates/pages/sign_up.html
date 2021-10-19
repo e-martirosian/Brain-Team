@@ -1,0 +1,96 @@
+{% extends 'index.html' %}
+{% load static %}
+
+{% block header %}
+    <link rel="stylesheet" href="{% static "css/sign.css" %}">
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Andada+Pro&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Andada+Pro&family=Nunito:wght@300&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Andada+Pro&family=Lato:wght@300&family=Nunito:wght@300&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Andada+Pro&family=Lato:wght@300&family=Noto+Sans&family=Nunito:wght@300&display=swap');
+
+        body {
+            background: #efefef;
+            font-family: 'Andada Pro', 'Nunito', sans-serif;
+            font-family: 'Noto Sans', sans-serif;
+            display: inline-block;
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+        }
+
+        button {
+            background: #1593E8;
+            border: 0;
+            border-radius: 2px;
+            box-shadow: none;
+            padding: 2% 5%;
+            color: white;
+            font-size: 1em;
+            margin-bottom: 5%;
+            font-family: 'Andada Pro', 'Nunito', sans-serif;
+            font-family: 'Noto Sans', sans-serif;
+            text-transform: uppercase;
+        }
+
+        .sign {
+            background: white;
+            width: 30%;
+            margin-left: 35%;
+            border-radius: 2px;
+            margin-top: 5%;
+        {#border: 1px solid grey;#}
+        }
+
+        .sign h1 {
+            display: inline-block;
+            text-align: center;
+            padding: 2%;
+            margin: 0;
+            font-size: 2em;
+        }
+
+        .sign .header {
+            background: #191c25;
+            color: white;
+            text-align: center;
+            margin: 0;
+            font-family: 'Andada Pro', 'Nunito', sans-serif;
+            font-family: 'Noto Sans', sans-serif;
+            text-transform: uppercase;
+            margin-bottom: 1em;
+        {#padding-top: 1px;#}{#padding-bottom: 1px;#}
+        }
+    </style>
+{% endblock %}
+{% block content %}
+    <div style="background: #191c25; width: 2%; margin: 0; float: left; height: 100%; display: inline-block; position: fixed;"
+         id="back">
+        <img src="{% static "img/arrow.png" %}"
+             style="position:relative; background: #191c25; width: 50%; margin-left: 25%; top: 48%; ">
+    </div>
+    <script type="text/javascript">
+        $('#back').on("click", function () {
+            document.location.href = '{% url 'home' %}';
+        });
+    </script>
+
+    <form method="post" action="{% url 'sign_up' %}" class="sign">
+        {% csrf_token %}
+
+        <div class="header">
+            <h1>Регистрация</h1>
+        </div>
+        <input type="text" name="name" placeholder="Имя" required><br>
+        <input type="text" name="surname" placeholder="Фамилия" required><br>
+        <input type="text" name="patronymic" placeholder="Отчество" required><br>
+        <label> Дата рождения <br>
+            <input type="date" name="birthday" required>
+        </label><br>
+        <input type="email" name="email" placeholder="E-mail" required><br>
+        <input type="password" name="password" placeholder="Пароль" required><br>
+        <button type="submit" style="background: #79D91A;">Зарегистрироваться</button>
+    </form>
+{% endblock %}

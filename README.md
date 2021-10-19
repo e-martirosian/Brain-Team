@@ -1,4 +1,8 @@
-# Day 1 
+# Day 2 (19.10.2021)
+
+[Пример работы (это ссылка на видео).](https://drive.google.com/file/d/1PCnbUtR1rXLmXdZpZAGhekehxI1EEaVl/view?usp=sharing)
+
+# Day 1 (18.10.2021)
 
 ## Описание и БД
 

@@ -1,0 +1,29 @@
+@import url('https://fonts.googleapis.com/css2?family=Andada+Pro&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Andada+Pro&family=Nunito:wght@300&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Andada+Pro&family=Lato:wght@300&family=Nunito:wght@300&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Andada+Pro&family=Lato:wght@300&family=Noto+Sans&family=Nunito:wght@300&display=swap');
+
+.errors {
+    position: static;
+    width: 90%;
+    padding: 0.5% 5% 1% 5%;
+    /*background: #F26444;*/
+    color: white;
+    font-family: 'Andada Pro', 'Nunito', sans-serif;
+    font-family: 'Noto Sans', sans-serif;
+    cursor: default;
+}
+
+.errors_name {
+    margin-top: 0.5%;
+    display: inline-block;
+    font-weight: bold;
+    margin-right: 1%;
+}
+
+#close_errors {
+    /* display: inline-block; */
+    float: right;
+    font-weight: bold;
+    font-size: 150%;
+}
