@@ -1,3 +1,10 @@
+# Day 3 (20.10.2021)
+
+- минимальный личный кабинет
+- создание компании и отправка запроса на подтверждение
+
+[Пример работы (это ссылка на видео).](https://drive.google.com/file/d/1frp6ijluFZl8t2Gl6TunT-2FIcvdwzx1/view?usp=sharing)
+
 # Day 2 (19.10.2021)
 
 [Пример работы (это ссылка на видео).](https://drive.google.com/file/d/1PCnbUtR1rXLmXdZpZAGhekehxI1EEaVl/view?usp=sharing)
