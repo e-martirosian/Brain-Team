@@ -4,6 +4,10 @@ from django.db import models
 from django.urls import reverse
 from django.utils import timezone
 
+class Company(models.Model):
+    name = models.CharField(max_length=100, default='')
+    superadmin_id = models.IntegerField(default=0, null=False)
+
 
 class Profile(models.Model):
     user = models.OneToOneField(User, related_name='user', related_query_name='user', on_delete=models.CASCADE,
@@ -12,7 +16,8 @@ class Profile(models.Model):
     surname = models.CharField(max_length=100, default='')
     patronymic = models.CharField(max_length=100, default='')
     birthday = models.DateField()
-    # company = models.ForeignKey()
+    company = models.ForeignKey(Company, related_name='profile_company', related_query_name='profile_company',
+                                on_delete=models.CASCADE, null=True)
     # events = models.ForeignKey()
 
     avatar = models.ImageField(upload_to='user_avatars/', blank=True,

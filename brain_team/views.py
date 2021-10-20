@@ -5,11 +5,14 @@ from django.shortcuts import render, redirect
 
 from brain_team.constance import *
 from . import events, constance
-from .models import Profile
+from .models import Profile, Company
 
 
 def get_full_context(request, context):
-    general_context = {"events": events.get(request), "constance": constance}
+    profile = None
+    if request.user.is_authenticated:
+        profile = Profile.objects.get(user__id=request.user.id)
+    general_context = {"events": events.get(request), "constance": constance, "profile": profile}
     return {**context, **general_context}
 
 
@@ -66,16 +69,63 @@ def sign_up(request):
             return redirect("sign_in")
 
         else:
-            events.add_event(request, {'Ошибка': 'Неправильно заполнены поля.'})
+            events.add_event(request, {'Ошибка': ['Неправильно заполнены поля.']})
     return render(request, 'pages/sign_up.html', get_full_context(request, {'PAGE_NAME': SIGN_UP_PAGE_NAME}))
 
 
 @login_required(login_url='/sign_in')
 def profile(request):
-    return render(request, 'pages/profile.html')
+    return render(request, 'pages/profile/profile.html', get_full_context(request, {'PAGE_NAME': PROFILE_PAGE_NAME}))
 
 
 @login_required(login_url='/sign_in')
 def sign_out(request):
     logout(request)
     return redirect('/')
+
+
+def company(request):
+    return render(request, 'pages/profile/company.html', get_full_context(request, {'PAGE_NAME': COMPANY_PAGE_NAME}))
+
+
+def get_profile(request):
+    return Profile.objects.get(user__id=request.user.id)
+
+
+def create_company(request):
+    profile = get_profile(request)
+    if profile.company is not None:
+        return redirect('/company')
+
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        if valid_field(name):
+            company = Company.objects.create(name=name)
+            company.superadmin_id = profile.user.id
+            company.save()
+            profile.status = 2
+            profile.company = company
+            profile.save()
+        return redirect('profile')
+    return render(request, 'pages/profile/create_company.html',
+                  get_full_context(request, {'PAGE_NAME': COMPANY_PAGE_NAME}))
+
+
+def choose_company(request):
+    profile = get_profile(request)
+    if profile.company is not None:
+        return redirect('/company')
+
+    if request.method == 'POST':
+        id = request.POST.get('id')
+        company = Company.objects.all().filter(id=id)
+        if company.count() != 0:
+            company = company[0]
+            profile.status = 1
+            profile.save()
+            return redirect('profile')
+        else:
+            events.add_event(request, {'Ошибка': ['Нет организации c таким ID.']})
+
+    return render(request, 'pages/profile/choose_company.html',
+                  get_full_context(request, {'PAGE_NAME': COMPANY_PAGE_NAME}))
