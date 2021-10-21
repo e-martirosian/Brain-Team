@@ -17,6 +17,11 @@ def get_item(dictionary, key):
     return dictionary.get(key)
 
 
+@register.filter
+def is_item(dictionary, key):
+    return key in dictionary.keys()
+
+
 @register.simple_tag
 def media(url):
     if settings.DEBUG:

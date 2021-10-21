@@ -28,4 +28,5 @@ urlpatterns = [
     path('company', views.company, name='company'),
     path('create_company', views.create_company, name='create_company'),
     path('choose_company', views.choose_company, name='choose_company'),
+    path('add_to_company', views.add_to_company, name='add_to_company'),
 ]

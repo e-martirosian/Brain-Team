@@ -21,16 +21,70 @@
         a {
             text-decoration: none;
         }
+
+        .sub_block {
+            display: none;
+            width: 100%;
+        }
+
+        .request_name, .request_email, .request_add_icon, .request_ignore_icon {
+            display: inline-block;
+            float: left;
+            padding: 2vh 2%;
+            height: 3vh;
+            border-radius: 2px;
+        {#border: 1px solid black;#} background: #fdfdfd;
+            font-size: 2vh;
+            margin: 0;
+            -webkit-box-shadow: 0px 0px 1px 0px rgba(50, 50, 50, 0.75);
+            -moz-box-shadow: 0px 0px 1px 0px rgba(50, 50, 50, 0.75);
+            box-shadow: 0px 0px 1px 0px rgba(50, 50, 50, 0.75);
+        }
+
+        .request_name {
+            width: 43%;
+            border-bottom-right-radius: 0;
+            border-top-right-radius: 0;
+            border-right: 0;
+        }
+
+        .request_email {
+            width: 36%;
+            border-radius: 0;
+            border: 0;
+            text-align: center;
+        }
+
+        .request_add_icon, .request_ignore_icon {
+            cursor: pointer;
+            display: inline-block;
+            height: 7vh;
+            width: 2%;
+            border-bottom-left-radius: 0;
+            border-top-left-radius: 0;
+            font-size: 5vh;
+            text-align: center;
+            font-weight: bold;
+            background: #79D91A;
+            color: #fafafa;
+            padding-top: 0;
+            padding-bottom: 0;
+        }
+
+        .request_ignore_icon {
+            background: #F26444;
+        }
     </style>
 {% endblock %}
 {% block block_name %}
     <br>
-    <span style="font-size: 0.5em;color: #868686;">ID: {% if profile.company is None %} {{ constance.PROFILE_STATUS|get_item:profile.status }} {% else %}
+    <span style="font-size: 0.5em;color: #868686;">ID: {% if profile.status != 2 %}
+        {{ constance.PROFILE_STATUS|get_item:profile.status }} {% else %}
         {{ profile.company.id }} {% endif %}</span>
 {% endblock %}
 
 {% block profile_content %}
-    {% if profile.company is None %}
+    {% if profile.status != 2 %}
         <div style="text-align: center; margin-top: 20%;">
             Вы не привязаны ни к одной организации.<br><br>
             <a href="{% url 'choose_company' %}">
@@ -41,6 +95,51 @@
             </a>
         </div>
     {% else %}
-        <b>Название:</b> {{ profile.company.name }}
+        <div class="sub_block" id="description">
+            <b>Название:</b> {{ profile.company.name }}
+        </div>
+        <div class="sub_block" id="requests">
+            {% for company_request in company_requests %}
+                <div class="request">
+                    <div class="request_name">
+                        {{ company_request.name }} {{ company_request.surname }}
+                    </div>
+                    <div class="request_email">
+                        {{ company_request.user.username }}
+                    </div>
+                    <div class="request_add_icon">
+                        <form class="form_request_add_icon" action="{% url 'add_to_company' %}" method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="user_id" value="{{ company_request.user.id }}">
+                            <input type="hidden" name="company_id" value="{{ profile.company.id }}">
+                            <input type="hidden" name="add" value=1>
+                            <input type="submit" style="display: none">
+                        </form>
+                        +
+                    </div>
+
+                    <div class="request_ignore_icon">
+                        <form class="form_request_ignore_icon" action="{% url 'add_to_company' %}" method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="user_id" value="{{ company_request.user.id }}">
+                            <input type="hidden" name="company_id" value="{{ profile.company.id }}">
+                            <input type="hidden" name="add" value=0>
+                            <input type="submit" style="display: none">
+                        </form>
+                        ×
+                    </div>
+
+
+                    <script type="text/javascript">
+                        $('.request_add_icon').on("click", function () {
+                            $('.form_request_add_icon').submit();
+                        });
+                        $('.request_ignore_icon').on("click", function () {
+                            $('.form_request_ignore_icon').submit();
+                        });
+                    </script>
+                </div>
+            {% endfor %}
+        </div>
     {% endif %}
 {% endblock %}

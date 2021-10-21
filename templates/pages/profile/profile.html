@@ -12,7 +12,7 @@
         @import url('https://fonts.googleapis.com/css2?family=Andada+Pro&family=Lato:wght@300&family=Noto+Sans&family=Nunito:wght@300&display=swap');
 
         body {
-            background: #efefef;
+            background: #fafafa;
             font-family: 'Andada Pro', 'Nunito', sans-serif;
             font-family: 'Noto Sans', sans-serif;
             display: inline-block;
@@ -89,7 +89,7 @@
             width: 74vw;
             padding: 1vw 3vw;
             background: white;
-            border-bottom: 2px solid #fbfbfb;
+        {#border-bottom: 2px solid #fbfbfb;#}
         }
 
         .main_content {
@@ -114,6 +114,36 @@
             margin-left: 20%;
             width: 70%;
         }
+
+        .main_block_menu {
+            width: 100%;
+            display: inline-block;
+            background: white;
+            border: 1px solid #eaeaea;
+            border-bottom: 2px solid #d44179;
+            height: 5vh;
+            border-right: 0;
+            border-left: 0;
+        }
+
+        .main_block_menu .item {
+            display: inline-block;
+            color: #333333;
+            background: white;
+            padding: 0.9vh 2%;
+            margin: 0;
+            border-right: 0.1vh solid #eaeaea;
+            float: left;
+            height: 3vh;
+            font-size: 1.1em;
+        }
+
+        .main_block_menu .chosen {
+            background: #d44179;
+            color: white;
+        {#border: 0;#} border-bottom: 2px solid #d44179;
+        {#color: #1593E8;#}{#border-top: 2px solid;#}{#border-right: 2px solid;#}{#border-left: 2px solid;#}
+        }
     </style>
     {% block profile_header %}
 
@@ -125,7 +155,7 @@
             <img src="{% media profile.avatar|stringformat:"s" %}"
                  style="border: 3px solid #fafafa; height: 10vw; width: 10vw; border-radius: 100%">
             <h2 style="margin-bottom: 0">{{ profile.name }} {{ profile.surname }}</h2>
-            <h4 style="margin-top: 0;">Организация: {% if profile.company is None %}
+            <h4 style="margin-top: 0;">Организация: {% if profile.status != 2 %}
                 {{ constance.PROFILE_STATUS|get_item:profile.status }}{% else %}
                 {{ profile.company.name }} {% endif %}</h4>
         </div>
@@ -134,10 +164,6 @@
                 <li><a style="{% if PAGE_NAME == PAGE_NAME_ %}border-left:3px solid #1593E8;{% endif %}"
                        href="{% url PAGE_URL %}">{{ PAGE_NAME_ }}</a></li><br>
             {% endfor %}
-            {#            <li>Профиль</li>#}
-            {#            <li>Организация</li>#}
-            {#            <li>Команды</li>#}
-            {#            <li>Расписание</li>#}
         </ul>
         <a href="{% url 'sign_out' %}">
             <button style="position: fixed; margin: 0; left: 5%; bottom: 2%; width: 10%; background: #d44179">
@@ -151,9 +177,43 @@
             {% block block_name %}
             {% endblock %}
         </div>
+        {% if constance.SUBPAGES|is_item:PAGE_NAME %}
+            <div class="main_block_menu">
+                {% for name, id in constance.SUBPAGES|get_item:PAGE_NAME %}
+                    <a href="{% url 'company' %}#{{ id }}" class="a_item">
+                        <div class="item" id="menu_{{ id }}">{{ name }}</div>
+                    </a>
+                {% endfor %}
+            </div>
+        {% endif %}
         <div class="main_content">
             {% block profile_content %}
             {% endblock %}
         </div>
     </div>
+    <script type="text/javascript">
+        var arr = [{% for name, id in constance.SUBPAGES|get_item:PAGE_NAME  %} '{{ id }}', {% endfor %}];
+
+        function update_subpages(id_hash) {
+            for (var i = 0; i < arr.length; i++) {
+                if (id_hash === arr[i]) {
+                    $('#' + arr[i]).css('display', 'inline-block');
+                    $('#menu_' + arr[i]).attr('class', 'item chosen');
+                } else {
+                    $('#' + arr[i]).css('display', 'none');
+                    $('#menu_' + arr[i]).attr('class', 'item');
+                }
+            }
+            if (id_hash === '') {
+                $('#description').css('display', 'inline-block');
+                $('#menu_description').attr('class', 'item chosen');
+            }
+        }
+
+        update_subpages(window.location.hash.substr(1));
+
+        $('.item').on("click", function () {
+            update_subpages($(this).attr('id').substr(5));
+        });
+    </script>
 {% endblock %}

@@ -84,17 +84,25 @@ def sign_out(request):
     return redirect('/')
 
 
-def company(request):
-    return render(request, 'pages/profile/company.html', get_full_context(request, {'PAGE_NAME': COMPANY_PAGE_NAME}))
-
-
 def get_profile(request):
     return Profile.objects.get(user__id=request.user.id)
 
 
+def company(request):
+    profile = get_profile(request)
+    company_requests = []
+    if profile.company is not None:
+        superadmin = Company.objects.filter(id=profile.company.id, superadmin_id=profile.user.id)
+        if superadmin.count() != 0:
+            company_requests = Profile.objects.filter(company__id=profile.company.id, status=1)
+    return render(request, 'pages/profile/company.html', get_full_context(request,
+                                                                          {'PAGE_NAME': COMPANY_PAGE_NAME,
+                                                                           'company_requests': company_requests}))
+
+
 def create_company(request):
     profile = get_profile(request)
-    if profile.company is not None:
+    if profile.status == 2:
         return redirect('/company')
 
     if request.method == 'POST':
@@ -106,6 +114,7 @@ def create_company(request):
             profile.status = 2
             profile.company = company
             profile.save()
+            events.add_event(request, {EVENT_INFO: ['Организация успешно создана.']})
         return redirect('profile')
     return render(request, 'pages/profile/create_company.html',
                   get_full_context(request, {'PAGE_NAME': COMPANY_PAGE_NAME}))
@@ -113,7 +122,7 @@ def create_company(request):
 
 def choose_company(request):
     profile = get_profile(request)
-    if profile.company is not None:
+    if profile.status == 2:
         return redirect('/company')
 
     if request.method == 'POST':
@@ -121,11 +130,30 @@ def choose_company(request):
         company = Company.objects.all().filter(id=id)
         if company.count() != 0:
             company = company[0]
+            profile.company = company
             profile.status = 1
             profile.save()
+            events.add_event(request, {EVENT_INFO: ['Запрос отправлен.']})
             return redirect('profile')
         else:
             events.add_event(request, {'Ошибка': ['Нет организации c таким ID.']})
 
     return render(request, 'pages/profile/choose_company.html',
                   get_full_context(request, {'PAGE_NAME': COMPANY_PAGE_NAME}))
+
+
+def add_to_company(request):
+    if request.method == 'POST':
+        company_id = request.POST.get('company_id')
+        user_id = request.POST.get('user_id')
+        add = int(request.POST.get('add'))
+
+        profile = Profile.objects.get(user__id=user_id)
+        if add == 1:
+            profile.status = 2
+            events.add_event(request, {EVENT_INFO: ['Запрос принят.']})
+        else:
+            events.add_event(request, {EVENT_INFO: ['Запрос отклонен.']})
+            profile.status = -1
+        profile.save()
+    return redirect('/company#requests')

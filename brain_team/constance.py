@@ -10,6 +10,8 @@ COMPANY_PAGE_NAME = "Организация"
 COMMANDS_PAGE_NAME = "Команды"
 SCHEDULE_PAGE_NAME = "Расписание"
 
-PROFILE_STATUS = {0: '-', 1: 'на подтверждение'}
+PROFILE_STATUS = {0: '-', 1: 'на подтверждение', -1: 'запрос отклонен'}
 PAGES = [[PROFILE_PAGE_NAME, 'profile'], [COMPANY_PAGE_NAME, 'company'], [COMMANDS_PAGE_NAME, 'home'],
          [SCHEDULE_PAGE_NAME, 'home']]
+
+SUBPAGES = {COMPANY_PAGE_NAME: [['Описание', 'description'], ['Запросы', 'requests']]}
