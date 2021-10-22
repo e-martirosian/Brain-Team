@@ -5,7 +5,7 @@ from django.shortcuts import render, redirect
 
 from brain_team.constance import *
 from . import events, constance
-from .models import Profile, Company
+from .models import Profile, Company, Team
 
 
 def get_full_context(request, context):
@@ -36,7 +36,7 @@ def sign_in(request):
         else:
             events.add_event(request, {constance.EVENT_ERROR: [constance.NON_CORRECT_DATA]})
 
-    return render(request, 'pages/sign_in.html', get_full_context(request, {'PAGE_NAME': SIGN_IN_PAGE_NAME}))
+    return render(request, 'pages/auth/sign_in.html', get_full_context(request, {'PAGE_NAME': SIGN_IN_PAGE_NAME}))
 
 
 def valid_field(field):
@@ -70,7 +70,7 @@ def sign_up(request):
 
         else:
             events.add_event(request, {'Ошибка': ['Неправильно заполнены поля.']})
-    return render(request, 'pages/sign_up.html', get_full_context(request, {'PAGE_NAME': SIGN_UP_PAGE_NAME}))
+    return render(request, 'pages/auth/sign_up.html', get_full_context(request, {'PAGE_NAME': SIGN_UP_PAGE_NAME}))
 
 
 @login_required(login_url='/sign_in')
@@ -95,9 +95,9 @@ def company(request):
         superadmin = Company.objects.filter(id=profile.company.id, superadmin_id=profile.user.id)
         if superadmin.count() != 0:
             company_requests = Profile.objects.filter(company__id=profile.company.id, status=1)
-    return render(request, 'pages/profile/company.html', get_full_context(request,
-                                                                          {'PAGE_NAME': COMPANY_PAGE_NAME,
-                                                                           'company_requests': company_requests}))
+    return render(request, 'pages/profile/company/company.html', get_full_context(request,
+                                                                                  {'PAGE_NAME': COMPANY_PAGE_NAME,
+                                                                                   'company_requests': company_requests}))
 
 
 def create_company(request):
@@ -116,7 +116,7 @@ def create_company(request):
             profile.save()
             events.add_event(request, {EVENT_INFO: ['Организация успешно создана.']})
         return redirect('profile')
-    return render(request, 'pages/profile/create_company.html',
+    return render(request, 'pages/profile/company/create_company.html',
                   get_full_context(request, {'PAGE_NAME': COMPANY_PAGE_NAME}))
 
 
@@ -138,7 +138,7 @@ def choose_company(request):
         else:
             events.add_event(request, {'Ошибка': ['Нет организации c таким ID.']})
 
-    return render(request, 'pages/profile/choose_company.html',
+    return render(request, 'pages/profile/company/choose_company.html',
                   get_full_context(request, {'PAGE_NAME': COMPANY_PAGE_NAME}))
 
 
@@ -157,3 +157,22 @@ def add_to_company(request):
             profile.status = -1
         profile.save()
     return redirect('/company#requests')
+
+
+def teams(request):
+    return render(request, 'pages/profile/teams/teams.html',
+                  get_full_context(request, {'PAGE_NAME': TEAMS_PAGE_NAME}))
+
+
+def create_team(request):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        if valid_field(name):
+            team = Team.objects.create(name=name, admin=request.user.id)
+            team.save()
+            profile = get_profile(request)
+            profile.teams.add(team)
+            profile.save()
+        else:
+            events.add_event(request, {EVENT_INFO: [NON_CORRECT_DATA]})
+    return redirect('/teams#teams')

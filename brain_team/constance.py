@@ -7,11 +7,15 @@ NON_CORRECT_DATA = "Введены некорректные данные"
 
 PROFILE_PAGE_NAME = "Профиль"
 COMPANY_PAGE_NAME = "Организация"
-COMMANDS_PAGE_NAME = "Команды"
+TEAMS_PAGE_NAME = "Команды"
 SCHEDULE_PAGE_NAME = "Расписание"
+SIGN_OUT_PAGE = "Выйти"
 
 PROFILE_STATUS = {0: '-', 1: 'на подтверждение', -1: 'запрос отклонен'}
-PAGES = [[PROFILE_PAGE_NAME, 'profile'], [COMPANY_PAGE_NAME, 'company'], [COMMANDS_PAGE_NAME, 'home'],
-         [SCHEDULE_PAGE_NAME, 'home']]
+PAGES = [[PROFILE_PAGE_NAME, 'profile'], [COMPANY_PAGE_NAME, 'company'], [TEAMS_PAGE_NAME, 'teams'],
+         [SCHEDULE_PAGE_NAME, 'schedule'], [SIGN_OUT_PAGE, 'sign_out']]
 
-SUBPAGES = {COMPANY_PAGE_NAME: [['Описание', 'description'], ['Запросы', 'requests']]}
+PAGES_DICT = {key: value for key, value in PAGES}
+
+SUBPAGES = {COMPANY_PAGE_NAME: [['Описание', 'description'], ['Запросы', 'requests']],
+            TEAMS_PAGE_NAME: [['Список', 'teams'], ['Создать команду', 'create_team'], ['Приглашения', 'invitations']]}

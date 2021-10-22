@@ -1,0 +1,19 @@
+button {
+    background: #1593E8;
+    border: 0;
+    border-radius: 2px;
+    box-shadow: none;
+    padding: 1em 3em;
+    color: white;
+    font-size: 1em;
+    margin-bottom: 5%;
+    font-family: 'Andada Pro', 'Nunito', sans-serif;
+    font-family: 'Noto Sans', sans-serif;
+    text-transform: uppercase;
+}
+
+.choose_company {
+    text-align: center;
+    width: 50%;
+    margin-left: 25%
+}

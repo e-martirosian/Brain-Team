@@ -1,0 +1,48 @@
+{% extends 'pages/profile/profile.html' %}
+{% load static %}
+{% load general %}
+
+{% block profile_header %}
+    <link rel="stylesheet" href="{% static "css/sign.css" %}">
+    <link rel="stylesheet" href="{% static "css/profile/teams/teams.css" %}">
+{% endblock %}
+{% block block_name %}
+{% endblock %}
+
+{% block profile_content %}
+    {% if profile.status != 2 %}
+        <div style="text-align: center; margin-top: 20%;">
+            Вы не привязаны ни к одной организации.<br><br>
+            <a href="{% url 'choose_company' %}">
+                <button>Отправить запрос</button>
+            </a>
+            <a href="{% url 'create_company' %}">
+                <button style="background: #79D91A">Создать</button>
+            </a>
+        </div>
+    {% else %}
+        <div class="sub_block" id="teams">
+            <table>
+               <tr>
+                   <td>ID</td>
+                   <td>Название</td>
+               </tr>
+                <tr>
+                    {% for team in profile.teams.all %}
+                        <td>{{ team.id }}</td>
+                        <td>{{ team.name }}</td>
+                    {% endfor %}
+                </tr>
+            </table>
+        </div>
+        <div class="sub_block" id="create_team">
+            <form action="{% url 'create_team' %}" method="post">
+                {% csrf_token %}
+                <input type="text" name="name" placeholder="Название" required><br>
+                <button type="submit">Создать</button>
+            </form>
+        </div>
+        <div class="sub_block" id="invitations">
+        </div>
+    {% endif %}
+{% endblock %}

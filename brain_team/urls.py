@@ -27,6 +27,9 @@ urlpatterns = [
     path('sign_out', views.sign_out, name='sign_out'),
     path('company', views.company, name='company'),
     path('create_company', views.create_company, name='create_company'),
-    path('choose_company', views.choose_company, name='choose_company'),
+    path('company', views.choose_company, name='company'),
     path('add_to_company', views.add_to_company, name='add_to_company'),
+    path('teams', views.teams, name='teams'),
+    path('schedule', views.home, name='schedule'),
+    path('create_team', views.create_team, name='create_team'),
 ]
