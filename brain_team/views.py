@@ -160,8 +160,21 @@ def add_to_company(request):
 
 
 def teams(request):
+    profile = get_profile(request)
+
+    profile_teams = []
+    for team in profile.teams.all():
+        if team.admin == profile.user.id:
+            profile_teams.append(team)
+
+    requests_teams_list = []
+    for team in profile_teams:
+        for user in Team.objects.get(id=team.id).requests.all():
+            requests_teams_list.append([team, Profile.objects.get(user__id=user.id)])
+
+    print(requests_teams_list)
     return render(request, 'pages/profile/teams/teams.html',
-                  get_full_context(request, {'PAGE_NAME': TEAMS_PAGE_NAME}))
+                  get_full_context(request, {'PAGE_NAME': TEAMS_PAGE_NAME, 'requests_teams_list': requests_teams_list}))
 
 
 def create_team(request):
@@ -176,3 +189,51 @@ def create_team(request):
         else:
             events.add_event(request, {EVENT_INFO: [NON_CORRECT_DATA]})
     return redirect('/teams#teams')
+
+
+def request_to_team(request):
+    if request.method == 'POST':
+        id = request.POST.get('id')
+        if valid_field(id):
+            team = Team.objects.filter(id=id)
+            if team.count() == 0:
+                events.add_event(request, {EVENT_ERROR: ['Не найдена команда с таким ID.']})
+                return redirect('/teams#request_to_team')
+            team = team[0]
+            team.requests.add(request.user)
+            team.save()
+            events.add_event(request, {EVENT_INFO: ['Запрос отправлен.']})
+        else:
+            events.add_event(request, {EVENT_INFO: [NON_CORRECT_DATA]})
+    return redirect('/teams#request_to_team')
+
+
+def requests_teams_list(request):
+    return redirect('/teams#requests_teams_list')
+
+
+def add_to_team(request):
+    if request.method == 'POST':
+        team_id = request.POST.get('team_id')
+        user_id = request.POST.get('user_id')
+        add = int(request.POST.get('add'))
+
+        print(team_id, user_id, add, request.POST)
+        profile = Profile.objects.get(user__id=user_id)
+        team = Team.objects.get(id=team_id)
+        team.requests.remove(profile.user)
+        team.save()
+
+        if add == 1:
+            profile.teams.add(team)
+            profile.save()
+            events.add_event(request, {EVENT_INFO: ['Запрос принят.']})
+        else:
+            events.add_event(request, {EVENT_INFO: ['Запрос отклонен.']})
+        profile.save()
+    return redirect('/teams#requests_teams_list')
+
+
+def events_list(request):
+    return render(request, 'pages/profile/events/events.html',
+                  get_full_context(request, {'PAGE_NAME': EVENTS_PAGE_NAME}))

@@ -12,6 +12,13 @@ class Company(models.Model):
 class Team(models.Model):
     admin = models.IntegerField(default=0)
     name = models.CharField(max_length=100, default='')
+    requests = models.ManyToManyField(User())
+
+
+class QuizQuestion(models.Model):
+    question = models.CharField(max_length=500, default='')
+    answer_type = models.IntegerField(null=False)
+    answers = ArrayField(models.CharField(max_length=100), null=True, default=[])
 
 
 class Profile(models.Model):

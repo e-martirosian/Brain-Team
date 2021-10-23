@@ -4,7 +4,22 @@
 
 {% block profile_header %}
     <link rel="stylesheet" href="{% static "css/sign.css" %}">
+    <link rel="stylesheet" href="{% static "css/profile/company/company.css" %}">
     <link rel="stylesheet" href="{% static "css/profile/teams/teams.css" %}">
+    <style>
+        .request_name {
+            width: 21%;
+        }
+
+        .team_name {
+            width: 18%;
+        }
+
+        .th div{
+            background-color: #d44179;
+            color: white;
+        }
+    </style>
 {% endblock %}
 {% block block_name %}
 {% endblock %}
@@ -23,17 +38,33 @@
     {% else %}
         <div class="sub_block" id="teams">
             <table>
-               <tr>
-                   <td>ID</td>
-                   <td>Название</td>
-               </tr>
                 <tr>
-                    {% for team in profile.teams.all %}
+                    <td>ID</td>
+                    <td>Название</td>
+                    <td>Статус</td>
+                </tr>
+                {% for team in profile.teams.all %}
+                    <tr>
                         <td>{{ team.id }}</td>
                         <td>{{ team.name }}</td>
-                    {% endfor %}
-                </tr>
+                        <td>Участник</td>
+                    </tr>
+                {% endfor %}
+                {% for team in profile.requested_teams.all %}
+                    <tr>
+                        <td>{{ team.id }}</td>
+                        <td>{{ team.name }}</td>
+                        <td>На потверждение</td>
+                    </tr>
+                {% endfor %}
             </table>
+        </div>
+        <div class="sub_block" id="request_to_team">
+            <form action="{% url 'request_to_team' %}" method="post">
+                {% csrf_token %}
+                <input type="text" name="id" placeholder="ID" required><br>
+                <button type="submit">Отправить запрос</button>
+            </form>
         </div>
         <div class="sub_block" id="create_team">
             <form action="{% url 'create_team' %}" method="post">
@@ -42,7 +73,66 @@
                 <button type="submit">Создать</button>
             </form>
         </div>
-        <div class="sub_block" id="invitations">
+        <div class="sub_block" id="requests_teams_list">
+            <div class="request th">
+                <div class="team_name">
+                    Команда
+                </div>
+                <div class="request_name">
+                    ФИО
+                </div>
+                <div class="request_email">
+                    E-mail
+                </div>
+                <div class="request_add_icon">
+                </div>
+                <div class="request_ignore_icon">
+                </div>
+            </div>
+            {% for team, request_profile in requests_teams_list %}
+                <div class="request">
+                    <div class="team_name">
+                        {{ team.name }}
+                    </div>
+                    <div class="request_name">
+                        {{ request_profile.name }} {{ request_profile.surname }}
+                    </div>
+                    <div class="request_email">
+                        {{ request_profile.user.username }}
+                    </div>
+                    <div class="request_add_icon">
+                        <form class="form_request_add_icon" action="{% url 'add_to_team' %}" method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="user_id" value="{{ request_profile.user.id }}">
+                            <input type="hidden" name="team_id" value="{{ team.id }}">
+                            <input type="hidden" name="add" value=1>
+                            <input type="submit" style="display: none">
+                        </form>
+                        +
+                    </div>
+
+                    <div class="request_ignore_icon">
+                        <form class="form_request_ignore_icon" action="{% url 'add_to_team' %}" method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="user_id" value="{{ request_profile.user.id }}">
+                            <input type="hidden" name="team_id" value="{{ team.id }}">
+                            <input type="hidden" name="add" value=0>
+                            <input type="submit" style="display: none">
+                        </form>
+                        ×
+                    </div>
+
+
+                    <script type="text/javascript">
+                        $('.request_add_icon').on("click", function () {
+                            $(this).find('.form_request_add_icon').submit();
+                        });
+                        $('.request_ignore_icon').on("click", function () {
+                            $(this).find('.form_request_ignore_icon').submit();
+                        });
+                    </script>
+                </div>
+            {% endfor %}
         </div>
     {% endif %}
 {% endblock %}

@@ -10,12 +10,16 @@ COMPANY_PAGE_NAME = "Организация"
 TEAMS_PAGE_NAME = "Команды"
 SCHEDULE_PAGE_NAME = "Расписание"
 SIGN_OUT_PAGE = "Выйти"
+EVENTS_PAGE_NAME = "Мероприятия"
 
 PROFILE_STATUS = {0: '-', 1: 'на подтверждение', -1: 'запрос отклонен'}
 PAGES = [[PROFILE_PAGE_NAME, 'profile'], [COMPANY_PAGE_NAME, 'company'], [TEAMS_PAGE_NAME, 'teams'],
-         [SCHEDULE_PAGE_NAME, 'schedule'], [SIGN_OUT_PAGE, 'sign_out']]
+         [SCHEDULE_PAGE_NAME, 'schedule'], [EVENTS_PAGE_NAME, 'events'], [SIGN_OUT_PAGE, 'sign_out']]
 
 PAGES_DICT = {key: value for key, value in PAGES}
 
 SUBPAGES = {COMPANY_PAGE_NAME: [['Описание', 'description'], ['Запросы', 'requests']],
-            TEAMS_PAGE_NAME: [['Список', 'teams'], ['Создать команду', 'create_team'], ['Приглашения', 'invitations']]}
+            TEAMS_PAGE_NAME: [['Список', 'teams'], ['Создать команду', 'create_team'],
+                              ['Запросы', 'requests_teams_list'], ['Отправить запрос', 'request_to_team']],
+
+            EVENTS_PAGE_NAME: [['Квизы', 'quiz']]}
