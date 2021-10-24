@@ -13,7 +13,8 @@ input {
     -webkit-appearance: none;
 }
 
-form input[type="text"], input[type="password"], input[type="email"], input[type="date"] {
+form input[type="text"], input[type="password"], input[type="email"],
+input[type="date"], input[type="datetime-local"], select {
     background-color: #fafafa;
     border-radius: 3px;
     -moz-border-radius: 3px;
@@ -26,8 +27,8 @@ form input[type="text"], input[type="password"], input[type="email"], input[type
     margin-top: 1em;
 }
 
-input[type="date"]{
-    width: 64%;
+input[type="date"], input[type="datetime-local"] {
+    width: auto;
 }
 
 form input:focus {

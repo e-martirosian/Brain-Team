@@ -30,10 +30,11 @@ urlpatterns = [
     path('company', views.choose_company, name='company'),
     path('add_to_company', views.add_to_company, name='add_to_company'),
     path('teams', views.teams, name='teams'),
-    path('schedule', views.home, name='schedule'),
+    path('schedule', views.schedule, name='schedule'),
     path('create_team', views.create_team, name='create_team'),
     path('request_to_team', views.request_to_team, name='request_to_team'),
     path('requests_teams_list', views.requests_teams_list, name='requests_teams_list'),
     path('add_to_team', views.add_to_team, name='add_to_team'),
     path('events', views.events_list, name='events'),
+    path('create_event', views.create_event, name='create_event'),
 ]

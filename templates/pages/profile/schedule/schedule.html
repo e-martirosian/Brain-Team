@@ -11,6 +11,14 @@
             width: 50%;
             margin-left: 25%;
         }
+
+        #quiz_list td:first-child {
+            width: 66%;
+        }
+
+        #quiz_list td:nth-child(2) {
+            width: 26%;
+        }
     </style>
 {% endblock %}
 {% block block_name %}
@@ -28,29 +36,21 @@
             </a>
         </div>
     {% else %}
-        <div class="sub_block" id="create_event">
-            <form action="{% url 'create_event' %}" method="post">
-                {% csrf_token %}
-                <label> Тип мероприятия <br>
-                    <select name="type">
-                        <option value="0">Квиз</option>
-                    </select>
-                </label><br>
-                <label> Команда <br>
-                    <select name="team_id">
-                        {% for team in profile.teams.all %}
-                            <option value="{{ team.id }}">{{ team.name }}</option>
-                        {% endfor %}
-                    </select>
-                </label><br>
-                <label> Время <br>
-                    <input type="datetime-local" name="datetime">
-                </label><br>
-                <button type="submit">Создать</button>
-            </form>
-        </div>
-        <div class="sub_block" id="test_event">
-
+        <div class="sub_block" id="quiz_list">
+            <table>
+                <tr>
+                    <td>Команда</td>
+                    <td>Время</td>
+                </tr>
+                {% for team, event in quiz_list %}
+                    {% for quiz in event %}
+                        <tr>
+                            <td>{{ quiz.team.name }}</td>
+                            <td>{{ quiz.datetime }}</td>
+                        </tr>
+                    {% endfor %}
+                {% endfor %}
+            </table>
         </div>
     {% endif %}
 {% endblock %}

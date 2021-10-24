@@ -5,7 +5,7 @@ from django.shortcuts import render, redirect
 
 from brain_team.constance import *
 from . import events, constance
-from .models import Profile, Company, Team
+from .models import Profile, Company, Team, Quiz
 
 
 def get_full_context(request, context):
@@ -237,3 +237,30 @@ def add_to_team(request):
 def events_list(request):
     return render(request, 'pages/profile/events/events.html',
                   get_full_context(request, {'PAGE_NAME': EVENTS_PAGE_NAME}))
+
+
+def create_event(request):
+    if request.method == 'POST':
+        team_id = request.POST.get('team_id')
+        type = request.POST.get('type')
+        datetime = request.POST.get('datetime')
+
+        if valid_field(datetime) and valid_field(team_id) and valid_field(type):
+            try:
+                if int(type) == 0:
+                    quiz = Quiz.objects.create(team=Team.objects.get(id=team_id), datetime=datetime)
+                    quiz.save()
+                    events.add_event(request, {EVENT_INFO: ['Мероприятие создано.']})
+            except:
+                events.add_event(request, {EVENT_ERROR: ['Введены некорректные данные.']})
+    return redirect('events')
+
+
+def schedule(request):
+    profile = get_profile(request)
+    quiz_list = []
+    for team in profile.teams.all():
+        quiz_list.append([team, Quiz.objects.filter(team_id=team.id).all()])
+
+    return render(request, 'pages/profile/schedule/schedule.html',
+                  get_full_context(request, {'PAGE_NAME': SCHEDULE_PAGE_NAME, 'quiz_list': quiz_list}))

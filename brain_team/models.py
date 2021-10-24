@@ -21,6 +21,13 @@ class QuizQuestion(models.Model):
     answers = ArrayField(models.CharField(max_length=100), null=True, default=[])
 
 
+class Quiz(models.Model):
+    name = models.CharField(max_length=100, default='')
+    team = models.ForeignKey(Team, related_name='quiz_team', related_query_name='quiz_team',
+                             on_delete=models.CASCADE, null=True)
+    datetime = models.DateTimeField()
+
+
 class Profile(models.Model):
     user = models.OneToOneField(User, related_name='user', related_query_name='user', on_delete=models.CASCADE,
                                 primary_key=True)

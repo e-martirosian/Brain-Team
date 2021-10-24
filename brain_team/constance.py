@@ -22,4 +22,5 @@ SUBPAGES = {COMPANY_PAGE_NAME: [['Описание', 'description'], ['Запр�
             TEAMS_PAGE_NAME: [['Список', 'teams'], ['Создать команду', 'create_team'],
                               ['Запросы', 'requests_teams_list'], ['Отправить запрос', 'request_to_team']],
 
-            EVENTS_PAGE_NAME: [['Квизы', 'quiz']]}
+            EVENTS_PAGE_NAME: [['Создать мероприятие', 'create_event'], ['Тестирование', 'test_event']],
+            SCHEDULE_PAGE_NAME: [['Квизы', 'quiz_list']]}
