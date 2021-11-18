@@ -1,11 +1,15 @@
+import datetime
+
+import pytz
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
+from django.utils import timezone
 
 from brain_team.constance import *
 from . import events, constance
-from .models import Profile, Company, Team, Quiz
+from .models import Profile, Company, Team, Quiz, QuizQuestion
 
 
 def get_full_context(request, context):
@@ -181,9 +185,10 @@ def create_team(request):
     if request.method == 'POST':
         name = request.POST.get('name')
         if valid_field(name):
-            team = Team.objects.create(name=name, admin=request.user.id)
-            team.save()
             profile = get_profile(request)
+            team = Team.objects.create(name=name, admin=request.user.id)
+            team.members.add(profile.user)
+            team.save()
             profile.teams.add(team)
             profile.save()
         else:
@@ -221,9 +226,9 @@ def add_to_team(request):
         print(team_id, user_id, add, request.POST)
         profile = Profile.objects.get(user__id=user_id)
         team = Team.objects.get(id=team_id)
+        team.members.add(profile.user)
         team.requests.remove(profile.user)
         team.save()
-
         if add == 1:
             profile.teams.add(team)
             profile.save()
@@ -243,12 +248,28 @@ def create_event(request):
     if request.method == 'POST':
         team_id = request.POST.get('team_id')
         type = request.POST.get('type')
-        datetime = request.POST.get('datetime')
+        DT = request.POST.get('datetime')
 
-        if valid_field(datetime) and valid_field(team_id) and valid_field(type):
+        if valid_field(DT) and valid_field(team_id) and valid_field(type):
             try:
                 if int(type) == 0:
-                    quiz = Quiz.objects.create(team=Team.objects.get(id=team_id), datetime=datetime)
+                    questions = QuizQuestion.objects.all()
+                    year, month, day = DT.split('-')
+                    hours, minutes = day[3:].split(':')
+                    day = day[:2]
+                    DT = timezone.localtime(datetime.datetime(int(year), int(month), int(day), int(hours), int(minutes),
+                                                              tzinfo=pytz.timezone("Europe/Moscow")), pytz.utc)
+                    DT = DT - datetime.timedelta(minutes=30)
+                    quiz = Quiz.objects.create(name='Quiz', team=Team.objects.get(id=team_id), datetime=DT)
+                    team = Team.objects.filter(id=team_id)[0]
+                    for q in questions:  # TODO:
+                        quiz.questions.add(q)
+                    quiz.num_questions = len(quiz.questions.all())
+
+                    print(DT, hours, minutes)
+                    quiz.timer = DT + datetime.timedelta(minutes=3)
+                    print(quiz.timer)
+                    quiz.teams.add(team)
                     quiz.save()
                     events.add_event(request, {EVENT_INFO: ['Мероприятие создано.']})
             except:

@@ -1,0 +1,63 @@
+{% extends 'pages/quiz/quiz.html' %}
+{% load static %}
+{% load general %}
+{% block header %}
+    <link rel="stylesheet" href="{% static "css/sign.css" %}">
+    <style>
+        .question {
+            margin-top: 10%;
+            margin-bottom: 5%;
+        }
+
+        .question, .answer {
+            display: inline-block;
+            padding: 2% 5%;
+            width: 84%;
+            margin-left: 3%;
+            border: 5px solid black;
+            border-radius: 10px;
+            background: #fafafa;
+        }
+
+        .answer {
+            margin-top: 1px;
+        }
+    </style>
+{% endblock %}
+{% block main_block %}
+    <div class="question">
+        {{ question.question }}
+    </div>
+    <div class="answers">
+        <script type="text/javascript">ans_num = 0</script>
+        {% for a in question.answers %}
+            <script type="text/javascript">
+                $(".answers").append('<div class="answer" id="answer_' + ans_num + '">{{ a }}</div>');
+                ans_num += 1;
+            </script>
+        {% endfor %}
+    </div>
+    {% if cur_profile_answer.answer == -1 %}
+        <form method="post" style="display: none" id="form_send_ans" action="{% url 'quiz_add_answer' %}">
+            {% csrf_token %}
+            <input type="hidden" value="{{ question.id }}" name="q_id">
+            <input type="hidden" name="ans_id" id="ans_id">
+            <input type="hidden" name="quiz_id" id="quiz_id" value="{{ quiz.id }}">
+        </form>
+        <script type="text/javascript">
+            $('.answer').on("click", function () {
+                ans_id = $(this).attr('id').substring(7);
+                $("#ans_id").val(ans_id);
+                $(this).css("border", "2px solid #1593E8    ");
+                $("#form_send_ans").submit();
+            });
+        </script>
+    {% else %}
+        <script type="text/javascript">
+            $('#answer_' + {{ cur_profile_answer.answer }}).css("border", "3px solid #1593E8");
+        </script>
+    {% endif %}
+{% endblock %}
+{% block bottom_block %}
+
+{% endblock %}

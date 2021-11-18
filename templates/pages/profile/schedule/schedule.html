@@ -13,11 +13,19 @@
         }
 
         #quiz_list td:first-child {
-            width: 66%;
+            width: 6%;
         }
 
         #quiz_list td:nth-child(2) {
+            width: 46%;
+        }
+
+        #quiz_list td:nth-child(3) {
             width: 26%;
+        }
+
+        #quiz_list td:nth-child(4) {
+            width: 6%;
         }
     </style>
 {% endblock %}
@@ -39,14 +47,18 @@
         <div class="sub_block" id="quiz_list">
             <table>
                 <tr>
+                    <td>ID</td>
                     <td>Команда</td>
                     <td>Время</td>
+                    <td></td>
                 </tr>
                 {% for team, event in quiz_list %}
                     {% for quiz in event %}
                         <tr>
+                            <td>{{ quiz.id }}</td>
                             <td>{{ quiz.team.name }}</td>
-                            <td>{{ quiz.datetime }}</td>
+                            <td>{{ quiz.datetime }} UTC</td>
+                            <td><a href="{% url 'quiz' quiz.id %}">Перейти</a></td>
                         </tr>
                     {% endfor %}
                 {% endfor %}

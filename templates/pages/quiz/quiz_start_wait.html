@@ -1,0 +1,35 @@
+{% extends 'pages/quiz/quiz.html' %}
+{% load static %}
+{% load general %}
+{% block header %}
+    <meta http-equiv="refresh" content="10">
+    <link rel="stylesheet" href="{% static "css/sign.css" %}">
+    <style>
+        .bottom_block {
+            color: #333333;
+            text-align: center;
+        }
+    </style>
+{% endblock %}
+{% block main_block %}
+
+{% endblock %}
+{% block bottom_block %}
+    <div class="wait_block">
+        <p>Ожидание начала</p>
+        {% if profile_action.is_ready == False %}
+            <form method="post" action="{% url 'is_ready' %}">
+                {% csrf_token %}
+                <input name="quiz_id" type="hidden" value="{{ quiz.id }}">
+                <button type="submit">Готов</button>
+            </form>
+        {% else %}
+            <form method="post" action="{% url 'is_not_ready' %}">
+                {% csrf_token %}
+                <input name="quiz_id" type="hidden" value="{{ quiz.id }}">
+                <button type="submit">Отмена</button>
+            </form>
+        {% endif %}
+    </div>
+
+{% endblock %}

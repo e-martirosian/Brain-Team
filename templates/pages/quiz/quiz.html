@@ -1,0 +1,150 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="refresh" content="5">
+    <title>{{ quiz.name }}</title>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="http://code.jquery.com/jquery-3.3.1.js" crossorigin="anonymous"
+            integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="></script>
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <link rel="stylesheet" href="{% static "css/events.css" %}">
+    <link rel="shortcut icon" type="image/jpg" href="{% static 'img/favicon.ico' %}"/>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Andada+Pro&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Andada+Pro&family=Nunito:wght@300&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Andada+Pro&family=Lato:wght@300&family=Nunito:wght@300&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Andada+Pro&family=Lato:wght@300&family=Noto+Sans&family=Nunito:wght@300&display=swap');
+
+        body {
+            background: #1f222b;
+            font-family: 'Andada Pro', 'Nunito', sans-serif;
+            font-family: 'Noto Sans', sans-serif;
+        {#display: inline-block;#} width: 100vw;
+            height: 100vh;
+            padding: 0;
+            margin: 0;
+        }
+
+        .main_block {
+            padding: 0;
+            margin: 0;
+            background: #322b38;
+            background: url(/static/img/img_3.png);
+            width: 79vw;
+            float: left;
+            display: inline-block;
+            height: 100%;
+            border-right: 1px solid #1f222b;
+        }
+
+        .bottom_block {
+            padding: 0;
+            margin: 0;
+            background: white;
+            width: 20%;
+            display: inline-block;
+            float: left;
+            height: 100%;
+        }
+
+        button {
+            background: #1593E8;
+            border: 0;
+            border-radius: 2px;
+            box-shadow: none;
+            padding: 2% 3%;
+            color: white;
+            font-family: 'Andada Pro', 'Nunito', sans-serif;
+            font-family: 'Noto Sans', sans-serif;
+            text-transform: uppercase;
+        }
+
+        .timer, .wait_block, .points_block{
+            font-size: 3em;
+        }
+
+        .timer, .points_block{
+            text-align: center;
+        }
+
+        .timer p, .wait_block p, .points_block p{
+            font-size: 0.5em;
+            margin-bottom: 0;
+            color: #333333;
+        }
+
+        button {
+            padding: 5% 10%;
+            font-weight: bold;
+            font-size: 0.3em;
+        }
+    </style>
+    {% block header %}
+    {% endblock %}
+</head>
+<body>
+<div class="main_block">
+    {% block main_block %}
+    {% endblock %}
+</div>
+<div class="bottom_block">
+    <h1 style="color: #333333; text-align: center">{{ profile.name }} {{ profile.surname }}</h1>
+    <script type="text/javascript">
+        function doTimer(length, resolution, oninstance, oncomplete) {
+            var steps = (length / 100) * (resolution / 10),
+                speed = length / steps,
+                count = 0,
+                start = new Date().getTime();
+
+            function instance() {
+                if (count++ == steps) {
+                    oncomplete(steps, count);
+                } else {
+                    oninstance(steps, count);
+
+                    var diff = (new Date().getTime() - start) - (count * speed);
+                    window.setTimeout(instance, (speed - diff));
+                }
+            }
+
+            window.setTimeout(instance, speed);
+        }
+
+        doTimer({{ quiz_timer }}, 1, function (steps, count) {
+                if (steps - count < 0)
+                    return;
+                var cur = steps - count;
+                hours = Math.floor(cur / 3600);
+                if (hours < 10)
+                    hours = '0' + hours
+                $('.timer_hours').text(hours)
+                cur = cur % 3600;
+                mins = Math.floor(cur / 60)
+                if (mins < 10)
+                    mins = '0' + mins
+                $('.timer_min').text(mins);
+                secs = Math.floor((cur % 60))
+                if (secs < 10)
+                    secs = '0' + secs
+                $('.timer_sec').text(secs);
+            },
+            function () {
+            });
+    </script>
+    <div class="timer">
+        <p>Время</p>
+        <span class="timer_hours">--</span>:<span class="timer_min">--</span>:<span class="timer_sec">--</span>
+    </div>
+
+    <div class="points_block">
+        <p>Балл</p>
+        <span class="points">{{ profile_action.points }}</span>
+    </div>
+    {% block bottom_block %}
+    {% endblock %}
+</div>
+</body>
+</html>

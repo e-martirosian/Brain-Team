@@ -1,0 +1,9 @@
+{% extends 'pages/quiz/quiz_question.html' %}
+
+{% block bottom_block %}
+    {% if cur_profile_answer.points != 0 %}
+        <h1 style="text-align: center; color: mediumseagreen">Верный ответ!</h1>
+    {% else %}
+        <h1 style="text-align: center; color: orangered">Неверный ответ!</h1>
+    {% endif %}
+{% endblock %}

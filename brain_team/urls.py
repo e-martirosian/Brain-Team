@@ -16,7 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from brain_team import views
+from brain_team import views, quiz
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -37,4 +37,9 @@ urlpatterns = [
     path('add_to_team', views.add_to_team, name='add_to_team'),
     path('events', views.events_list, name='events'),
     path('create_event', views.create_event, name='create_event'),
+    path('is_ready', quiz.is_ready, name='is_ready'),
+    path('is_not_ready', quiz.is_not_ready, name='is_not_ready'),
+    path('quiz_add_answer', quiz.add_answer, name='quiz_add_answer'),
+    path('quiz_state<int:quiz_id>', quiz.quiz_state, name='quiz_state'),
+    path('quiz<int:quiz_id>', quiz.quiz_state, name='quiz'),
 ]
