@@ -1,3 +1,7 @@
+# Final
+
+[Пример работы (это ссылка на видео).](https://drive.google.com/file/d/1gZuI9GOcvbs4JOmqPvg-QoMpcu-9X50l/view?usp=sharing)
+
 # Day 7 (24.10.2021)
 
 - минимальная логика мероприятий и расписания (создание и отображения квиза в расписание);
